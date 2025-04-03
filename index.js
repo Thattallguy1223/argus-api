@@ -30,17 +30,21 @@ app.post('/update-task', async (req, res) => {
   res.json({ success: true, data });
 });
 
-// Add a skill
+// Add a skill (with logging)
 app.post('/add-skill', async (req, res) => {
   const { name, description, category } = req.body;
+  console.log('Received:', { name, description, category });
+
   const { data, error } = await supabase
     .from('skills')
     .insert([{ name, description, category }]);
+
+  console.log('Supabase response:', { data, error });
 
   if (error) return res.status(400).json({ error });
   res.json({ success: true, data });
 });
 
 app.listen(process.env.PORT || 3000, '0.0.0.0', () => {
-  console.log(`Argus backend running`);
+  console.log('Argus backend running');
 });
