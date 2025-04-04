@@ -85,3 +85,27 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`Argus backend running on port ${PORT}`);
 });
+app.post('/chat', async (req, res) => {
+  try {
+    const { messages } = req.body;
+
+    const response = await axios.post(
+      'https://openrouter.ai/api/v1/chat/completions',
+      {
+        model: 'openai/gpt-3.5-turbo',
+        messages,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+
+    res.json(response.data);
+  } catch (error) {
+    console.error('Chat error:', error.message);
+    res.status(500).json({ error: error.message });
+  }
+});
